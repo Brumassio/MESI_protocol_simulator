@@ -14,6 +14,6 @@ class cache:
 
     def verificaCache(self):
         for i in self.linhaCache:
-            if self.dados[i].ocupado == 0:
+            if self.ocupado[i] == 0:
                 return i     
         return 1
