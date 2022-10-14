@@ -5,17 +5,17 @@ def funHash(num): #função que preenche os valores da lista dos dados da cache
     num = num + 53352
     return num
 
-# linhas = {}
 dados = {}
 
-for i in range (100):
+for i in range (1024):
+    print(i)
     dados[i] = funHash(i)
-print(dados)
+# print(dados)
 
-mem = ram(dados)
+memRam = ram(dados)
 
-dadosCache = dados
-TagsCache= {}
+cacheProcess1 = cache()
+cacheProcess2 = cache() 
+cacheProcess3 = cache() 
 
-cacheProcess1 = cache(dadosCache,TagsCache) 
-print(mem.dado)
+print(memRam.dado)
