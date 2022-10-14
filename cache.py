@@ -1,10 +1,11 @@
 class cache:
-    def __init__(self, dados):
-        self.dados = dados
+    def __init__(self):
+        self.dados[32][4]
         self.tamBloco = 4
-        self.linhaCache = 32
+        self.linhaCache = 3
         self.ocupado
         self.tag[32][4]
+        self.armzIndice = {}
         # TAG pode ser:  modify – exclusive – shared – invalid
 
     def writeBack(self, RAM, indice):
@@ -17,3 +18,34 @@ class cache:
             if self.ocupado[i] == 0:
                 return i     
         return 1
+
+    def mostrarCache(self):
+        for i in range(self.linhaCache):
+            if self.ocupado[i] == 1:
+                print("linha:" + i + 1)
+            else: return
+            for j in  range(self.tamBloco):
+                print("pos do bloco %d: %d" %(j,self.dados[i][j]))   
+
+    def fifo(self):
+        for i in range(self.linhaCache):
+            if self.ocupado[i] == 1:
+                self.armzIndice.append(i)
+                
+        if self.armzIndice[31] == 32:
+            armz = self.armzIndice.pop(0)
+            return armz 
+
+    def read(self,pos, RAM):
+        aux = 0     
+        # [1][0] -> ram[4]
+        # fazer ifs para saber as duas posições? linha da cache e a linha do bloco? ;-;
+        for i in range(self.linhaCache):
+            if self.ocupado[i] == 0:
+                aux = i
+                return aux
+            for j in  range(self.tamBloco):
+                if self.dados[i][j] == RAM.leituraRam(pos):
+                    #read hit !!!
+                    return -1
+                                                                                                                                  
