@@ -5,7 +5,7 @@ class cache:
         self.linhaCache = 3
         self.ocupado
         self.tag[32][4]
-        self.armzIndice = {}
+        self.armzIndice  = []
         # TAG pode ser:  modify – exclusive – shared – invalid
 
     def writeBack(self, RAM, indice):
@@ -35,10 +35,21 @@ class cache:
         if self.armzIndice[31] == 32:
             armz = self.armzIndice.pop(0)
             return armz 
+       
+    # def inicializaCache(self):
+    #     for i in range(self.linhaCache):
+    #         for j in range(self.tamBloco):
+    #             self.tag[i][j] = "invalid"
+               
+    def readMiss(self, pos, RAM):
+        for i in range(self.linhaCache):
+            for j in range(self.tamBloco):
+                if self.tag[i][j] == "invalid" or  self.tag[i][j] == "modify":
+                    self.dados[i][j] = RAM.leituraRam(pos)
 
     def read(self,pos, RAM):
         aux = 0     
-        # [1][0] -> ram[4]
+        # [1][0] -> ram[4]  0 1 2 3  4 5 6 7  8 9 10 11  12 13 14 15
         # fazer ifs para saber as duas posições? linha da cache e a linha do bloco? ;-;
         for i in range(self.linhaCache):
             if self.ocupado[i] == 0:
@@ -48,4 +59,6 @@ class cache:
                 if self.dados[i][j] == RAM.leituraRam(pos):
                     #read hit !!!
                     return -1
-                                                                                                                                  
+        
+                                                                                                                                
+        
