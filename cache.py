@@ -1,10 +1,10 @@
 class cache:
     def __init__(self):
-        self.dados[32][4]
+        self.dados = [[32],[4]]
         self.tamBloco = 4
         self.linhaCache = 3
-        self.ocupado
-        self.tag[32][4]
+        self.ocupado = 0
+        self.tag = [[32],[4]]
         self.armzIndice  = []
         # TAG pode ser:  modify – exclusive – shared – invalid
 
@@ -40,8 +40,16 @@ class cache:
     #     for i in range(self.linhaCache):
     #         for j in range(self.tamBloco):
     #             self.tag[i][j] = "invalid"
-               
+    def acharIndice(self,pos): 
+        posBloco = pos % self.tamBloco
+        linCache = pos//self.tamBloco
+        return posBloco, linCache 
+        
+
     def readMiss(self, pos, RAM):
+        linCache = 0
+        posBloco = 0
+        linCache, posBloco = self.acharIndice(linCache, posBloco)
         for i in range(self.linhaCache):
             for j in range(self.tamBloco):
                 if self.tag[i][j] == "invalid" or  self.tag[i][j] == "modify":
