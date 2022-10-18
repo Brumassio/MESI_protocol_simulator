@@ -8,9 +8,8 @@ def funHash(num): #função que preenche os valores da lista dos dados da cache
 dados = {}
 
 for i in range (1024):
-    print(i)
     dados[i] = funHash(i)
-# print(dados)
+# hash em ação
 
 memRam = ram(dados)
 
