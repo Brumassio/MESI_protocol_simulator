@@ -1,6 +1,5 @@
 class ram:
     def __init__(self,dado):
-        # self.linha = linha
         self.tamRam = 1024
         self.dado = dado
 
