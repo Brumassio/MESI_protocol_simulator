@@ -1,3 +1,4 @@
+from cmath import pi
 from cache import cache
 from ram import ram
 
@@ -12,9 +13,33 @@ for i in range (1024):
 # hash em ação
 
 memRam = ram(dados)
-
 cacheProcess1 = cache()
+print(cacheProcess1.dados)
 cacheProcess2 = cache() 
 cacheProcess3 = cache() 
 
-print(memRam.dado)
+resposta = 0 
+
+resposta = int(input("Escolha qual processador será usado: "))
+operacao = input("Escolha qual operação deseja realizar: ")
+posicao = int(input("Digite a posição: "))
+print(resposta)
+if resposta == 1:
+    if operacao == "read":
+        cacheProcess1.read(posicao,memRam)
+    elif operacao == "write":
+        cacheProcess1.write(posicao,memRam)
+elif resposta == 2:
+    if operacao == "read":
+        cacheProcess2.read(posicao,memRam)
+    elif operacao == "write":
+        cacheProcess2.write(posicao,memRam)
+elif resposta == 3:
+    if operacao == "read":
+        cacheProcess3.read(posicao,memRam)           
+    elif operacao == "write":
+        cacheProcess3.write(posicao,memRam)
+
+
+
+#print(memRam.dado)
