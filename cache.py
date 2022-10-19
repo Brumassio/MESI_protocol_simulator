@@ -1,10 +1,10 @@
 class cache:
     def __init__(self):
-        self.dados = [[32],[4]]
+        self.dados = [0,0,0,0]*32
         self.tamBloco = 4
         self.linhaCache = 3
         self.ocupado = 0
-        self.tag = [[32],[4]]
+        self.tag = [0,0,0,0]*32
         self.armzIndice  = []
         # TAG pode ser:  modify – exclusive – shared – invalid
 
@@ -49,24 +49,28 @@ class cache:
     def readMiss(self, pos, RAM):
         linCache = 0
         posBloco = 0
-        linCache, posBloco = self.acharIndice(linCache, posBloco)
-        for i in range(self.linhaCache):
-            for j in range(self.tamBloco):
-                if self.tag[i][j] == "invalid" or  self.tag[i][j] == "modify":
-                    self.dados[i][j] = RAM.leituraRam(pos)
+        linCache, posBloco = self.acharIndice(pos)
+        if self.tag[i][j] == "invalid" or  self.tag[i][j] == "modify":
+            self.dados[i][j] = RAM.leituraRam(pos)
+                
 
     def read(self,pos, RAM):
-        aux = 0     
-        # [1][0] -> ram[4]  0 1 2 3  4 5 6 7  8 9 10 11  12 13 14 15
-        # fazer ifs para saber as duas posições? linha da cache e a linha do bloco? ;-;
-        for i in range(self.linhaCache):
-            if self.ocupado[i] == 0:
-                aux = i
-                return aux
-            for j in  range(self.tamBloco):
-                if self.dados[i][j] == RAM.leituraRam(pos):
-                    #read hit !!!
-                    return -1
+        linCache = 0
+        posBloco = 0
+        linCache, posBloco = self.acharIndice(pos)
+
+    def write(self, pos,RAM):
+        linCache = 0
+        posBloco = 0 
+        linCache, posBloco = self.acharIndice(pos)
+        self.dados[linCache][posBloco] = RAM.leituraRAM(pos)
+        if self.tag[linCache][posBloco] == "shared":
+            return -2
+        elif self.tag[linCache][posBloco] == "exclusive":
+            self.tag[linCache][posBloco] = "modify"
+            return -3
+
+            
         
                                                                                                                                 
         
