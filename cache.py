@@ -32,7 +32,7 @@ class cache:
     #     for i in range(self.linhaCache):
     #         for j in range(self.tamBloco):
     #             self.tag[i][j] = "invalid"
-
+    # essa funçaõ come o cu de quem esta lendo
     def acharIndice(self,pos): 
         posBloco = pos % self.tamBloco
         linCache = pos//self.tamBloco
@@ -91,20 +91,27 @@ class cache:
         return -1
        
 
-    def write(self, pos,RAM):
+    def write(self, pos,RAM,cache2,cache3):
         linCache = 0
         posBloco = 0 
         linCache, posBloco = self.acharIndice(pos)
         self.dados[linCache][posBloco] = RAM.leituraRAM(pos)
-        if self.tag[linCache][posBloco] == "shared":
-            return -2
-        elif self.tag[linCache][posBloco] == "exclusive":
-            self.tag[linCache][posBloco] = "modify"
-            return -3
+        #WRITE HIT
+        if self.tag[linCache] == "shared":
+            if cache2.dados[linCache][posBloco] == self.dados[linCache][posBloco]:
+                cache2.tag[pos] = "invalid"
+            if cache3.dados[linCache][posBloco] == self.dados[linCache][posBloco]:
+                cache3.tag[pos] = "invalid"
+        elif self.tag[linCache] == "exclusive":
+            self.tag[linCache] = "modify"
+        #Write Miss
+
+
 
             
         
     def fifo(self):
+
         for i in range(self.linhaCache):
             if self.ocupado[i] == 1:
                 self.armzIndice.append(i)
@@ -112,6 +119,7 @@ class cache:
         if self.armzIndice[31] == 32:
             armz = self.armzIndice.pop(0)
             return armz 
+            
         # testando operações, arrumar o fifo dps    
         if self.read() == -1:
             print("HEY VINI VAI TOMA NO CU")
