@@ -11,18 +11,21 @@ for i in range (1024):
     dados[i] = funHash(i)
 # hash em ação
 
-memRam = ram(dados)
+memRam = ram()
+memRam.dado = dados
 cacheProcess1 = cache()
 print(cacheProcess1.dados)
 cacheProcess2 = cache() 
 cacheProcess3 = cache() 
 
+#print(memRam.dado)
 resposta = 0
- 
+print(cacheProcess1.tag[0])
+
 resposta = int(input("Escolha qual processador será usado: "))
 operacao = input("Escolha qual operação deseja realizar: ")
 posicao = int(input("Digite a posição: "))
-print(resposta)
+#print(resposta)
 if resposta == 1:
     if operacao == "read":
         cacheProcess1.read(posicao,memRam,cacheProcess2,cacheProcess3)
