@@ -1,5 +1,5 @@
 class ram:
-    def __init__(self,dado):
+    def __init__(self):
         self.tamRam = 1024
         self.dado = [0]*1024
 
