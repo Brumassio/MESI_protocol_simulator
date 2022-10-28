@@ -1,10 +1,11 @@
 class cache:
     def __init__(self):
-        self.dados = [0,0,0,0]*32
+        self.dados = [[0,0,0,0] for _ in range(32)]
         self.tamBloco = 4
         self.linhaCache = 3
-        self.ocupado = 0
-        self.tag = [0]*32
+        self.ocupado = [0] * 32
+        #self.tag = [[0] for _ in range(32)]
+        self.tag = [0] *32
         self.armzIndice  = []
         # TAG pode ser:  modify – exclusive – shared – invalid
 
@@ -73,13 +74,17 @@ class cache:
         linCache = 0
         posBloco = 0
         linCache, posBloco = self.acharIndice(pos)
-        if self.dados[linCache][posBloco] == RAM.leituraRAM(pos):
+        if int(self.dados[linCache][posBloco]) == int(RAM.leituraRAM(pos)):
             #READ HIT
             print("READ HIT :",self.dados[linCache][posBloco])
             return self.dados[linCache][posBloco]
         #READ MISS 
         #lança o bloco todo na linha da cache
         self.blocoTotal(linCache,posBloco, pos, RAM)
+        print("linhaCache: "+str(linCache)+ ", posBloco: "+str(posBloco))
+        for i in range (self.tamBloco):
+            print("valor : "+str(self.dados[linCache][i]))
+        self.mostrarCache()
         if self.dados[linCache][posBloco] == cache2.dados[linCache][posBloco]:
             cache2.tag[pos] = "shared"
         else:
