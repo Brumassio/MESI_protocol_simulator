@@ -117,18 +117,17 @@ class cache:
     def fifo(self,RAM,cache2,cache3,acess,i):
         if acess[i][0] == 0:  # se o processador do acesso for o segundo
 
-            if acess[i][1] == 0:
+            if acess[i][1] == 0:  # verifica qual operação será executada
                 self.read(acess[i][2],RAM,cache2,cache3)
             elif acess[i][1] == 1:
                 for j in range(self.linhaCache):
                     if self.ocupado[j] == 1:
-                        self.armzIndice.append(j)
-
-                if len(self.armzIndice) == 32:
+                        self.armzIndice.append(j) 
+    # se a cache está lotada ela libera a primeira linha da cache   
+                if len(self.armzIndice) == 32: 
                     armz = self.armzIndice.pop(0)
                     self.writeBack(RAM,0)
                     return armz 
-                print("i: ",i,"tamanho do vetor: ",len(acess))                    
                 self.write(acess[i][2],RAM,cache2,cache3)
         
         elif acess[i][0] == 1: # se o processador do acesso for o segundo
@@ -140,7 +139,7 @@ class cache:
                 for j in range(cache2.linhaCache):
                     if cache2.ocupado[j] == 1:
                         cache2.armzIndice.append(j)
-                        
+            # se a cache está lotada ela libera a primeira linha da cache         
                 if len(cache2.armzIndice) == 32:
                     armz = cache2.armzIndice.pop(0)
                     cache2.writeBack(RAM,0)
@@ -150,15 +149,15 @@ class cache:
 
         elif acess[i][0] == 2: # se o processador do acesso for o terceiro
 
-            if acess[i][1] == 0:
+            if acess[i][1] == 0: #leitura
                 cache3.read(acess[i][2], RAM, self, cache2)
 
-            elif acess[i][1] == 1:
+            elif acess[i][1] == 1: #escrita
 
                 for j in range(cache2.linhaCache):
                     if cache3.ocupado[j] == 1:
                         cache3.armzIndice.append(j)
-                        
+            # se a cache está lotada ela libera a primeira linha da cache 
                 if len(cache3.armzIndice) == 32:
                     armz = cache3.armzIndice.pop(0)
                     cache3.writeBack(RAM,0)
