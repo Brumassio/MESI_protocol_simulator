@@ -16,17 +16,17 @@ cacheProcess3 = cache()
 
 
 
-acesso = [[0,0,0] for _ in range(10)]
+acesso = [[0,0,0] for _ in range(30)]
 # acesso[0][0] = 1 numero da cache
 # acesso[0][1] = 1 operção
 # acesso[0][2] = 1 pos da ram
 
-for i in range(10):
+for i in range(30):
     acesso[i][0] = randint(0,2)
     acesso[i][1] = randint(0,1)
-    acesso[i][2] = randint(0,50)
-for i in range(0,10):
-    cacheProcess1.fifo(memRam,cacheProcess2,cacheProcess3,acesso,i)
+    acesso[i][2] = randint(0,1024)
+for j in range(0,30):
+    cacheProcess1.fifo(memRam,cacheProcess2,cacheProcess3,acesso,j)
 
 print("CACHE 1")
 cacheProcess1.mostrarCache()
