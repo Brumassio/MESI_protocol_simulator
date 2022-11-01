@@ -138,7 +138,7 @@ class cache:
             elif acess[i][1] == 1:
     # se a cache está lotada ela libera a primeira linha da cache   
                 if len(self.armzIndice) == 32: 
-                    armz = self.armzIndice.pop(0)
+                    self.armzIndice.pop(0)
                     self.writeBack(RAM,0)
                 self.write(acess[i][2],RAM,cache2,cache3)
         
@@ -152,13 +152,13 @@ class cache:
 
                 cache2.read(acess[i][2],RAM,self,cache3)
                 if len(cache2.armzIndice) == 32:
-                    armz = cache2.armzIndice.pop(0)
+                    cache2.armzIndice.pop(0)
                     cache2.writeBack(RAM,0)
 
             elif acess[i][1] == 1: #escrita
             # se a cache está lotada ela libera a primeira linha da cache         
                 if len(cache2.armzIndice) == 32:
-                    armz = cache2.armzIndice.pop(0)
+                    cache2.armzIndice.pop(0)
                     cache2.writeBack(RAM,0)
                 cache2.write(acess[i][2],RAM,self,cache3) 
                  
@@ -171,7 +171,7 @@ class cache:
 
             if acess[i][1] == 0: #leitura
                 if len(cache3.armzIndice) == 32:
-                    armz = cache3.armzIndice.pop(0)
+                    cache3.armzIndice.pop(0)
                     cache3.writeBack(RAM,0)
                 cache3.read(acess[i][2], RAM, self, cache2)
 
@@ -180,7 +180,7 @@ class cache:
 
             # se a cache está lotada ela libera a primeira linha da cache 
                 if len(cache3.armzIndice) == 32:
-                    armz = cache3.armzIndice.pop(0)
+                    cache3.armzIndice.pop(0)
                     cache3.writeBack(RAM,0)
                 cache3.write(acess[i][2],RAM,self,cache2)      
 
