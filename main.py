@@ -14,12 +14,8 @@ cacheProcess1 = cache()
 cacheProcess2 = cache() 
 cacheProcess3 = cache() 
 
-#print(memRam.dado)
-resposta = 0
-print(cacheProcess1.tag[0])
 
 
-# matriz para 
 acesso = [[0,0,0] for _ in range(10)]
 # acesso[0][0] = 1 numero da cache
 # acesso[0][1] = 1 operção
