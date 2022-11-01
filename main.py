@@ -6,7 +6,7 @@ dados = [[0] for _ in range(1024)]
 
 for i in range (1024):
     dados[i] = randint(0,1000) 
-# hash em ação
+# randint em ação
 
 memRam = ram(dados)
 print(memRam.dado)
