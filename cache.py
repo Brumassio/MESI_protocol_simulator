@@ -1,51 +1,42 @@
 class cache:
     def __init__(self):
         self.dados = [[0,0,0,0] for _ in range(32)]
-        self.tamBloco = 4
-        self.linhaCache = 3
-        self.ocupado = [0] * 32
-        #self.tag = [[0] for _ in range(32)]
-        self.tag = [0] *32
-        self.armzIndice  = []
-        # TAG pode ser:  modify – exclusive – shared – invalid
+        self.tamBloco = 4   #tamanho do bloco
+        self.linhaCache = 32  #armazena o tamanho da linha da cache
+        self.ocupado = [0] * 32 #verifica se a linha da cache está ocupada
+        self.tag = [0] *32  # tag da linha da cache
+        self.armzIndice  = [] #atributo utlizado para o writeback
 
+
+    #função que realiza o writeBack
     def writeBack(self, RAM, indice):
         for i in range(4):
             if self.tag[indice][i] == 'modify':
                 RAM.dado[indice] = self.dados[i]
 
+
     def verificaCache(self):
         for i in self.linhaCache:
             if self.ocupado[i] == 0:
                 return i     
-        return 1
+        return -2
 
+    #printa as caches
     def mostrarCache(self):
         for i in range(self.linhaCache):
-            if self.ocupado[i] == 1:
-                print("linha:" + i + 1)
-            else: return
+            print("Linha da cache: ",i)
             for j in  range(self.tamBloco):
                 print("pos do bloco %d: %d" %(j,self.dados[i][j]))   
- 
        
-    # def inicializaCache(self):
-    #     for i in range(self.linhaCache):
-    #         for j in range(self.tamBloco):
-    #             self.tag[i][j] = "invalid"
-    # essa funçaõ come o cu de quem esta lendo
+
+    # acha os índices para as operações read e write
     def acharIndice(self,pos): 
         posBloco = pos % self.tamBloco
         linCache = pos//self.tamBloco
         return linCache, posBloco 
         
 
-    # def readMiss(self, pos, RAM):
-    #     linCache = 0
-    #     posBloco = 0
-    #     linCache, posBloco = self.acharIndice(pos)
-    #     if self.tag[i][j] == "invalid" or  self.tag[i][j] == "modify":
-    #         self.dados[i][j] = RAM.leituraRam(pos)
+
 
     # vai armazenar o bloco(4 linhas da ram) em uma linha da cache de acordo com as posições calculadas posteriormente 
     def blocoTotal(self,linCache, posBloco, pos, RAM):
@@ -81,53 +72,99 @@ class cache:
         #READ MISS 
         #lança o bloco todo na linha da cache
         self.blocoTotal(linCache,posBloco, pos, RAM)
-        print("linhaCache: "+str(linCache)+ ", posBloco: "+str(posBloco))
-        for i in range (self.tamBloco):
-            print("valor : "+str(self.dados[linCache][i]))
-        self.mostrarCache()
         if self.dados[linCache][posBloco] == cache2.dados[linCache][posBloco]:
-            cache2.tag[pos] = "shared"
+            cache2.tag[linCache] = "shared"
         else:
-            cache2.tag[pos] = "invalid"
+            cache2.tag[linCache] = "invalid"
         if self.dados[linCache][posBloco] == cache3.dados[linCache][posBloco]:
-            cache3.tag[pos] = "shared"
+            cache3.tag[linCache] = "shared"
         else: 
-            cache3.tag[pos] = "invalid"        
+            cache3.tag[linCache] = "invalid"        
         return -1
        
+
+    def buscaElem(self,elem):
+        for i in range(self.linhaCache):
+            for j in range(self.tamBloco):
+                if self.dados[i][j] == elem:
+                    return 1
+        return -1   
+
 
     def write(self, pos,RAM,cache2,cache3):
         linCache = 0
         posBloco = 0 
         linCache, posBloco = self.acharIndice(pos)
-        self.dados[linCache][posBloco] = RAM.leituraRAM(pos)
+        
         #WRITE HIT
-        if self.tag[linCache] == "shared":
+        if self.buscaElem(self.dados[linCache][posBloco] == 1):
+            if self.tag[linCache] == "shared":
+                if cache2.dados[linCache][posBloco] == self.dados[linCache][posBloco]:
+                    cache2.tag[pos] = "invalid"
+                if cache3.dados[linCache][posBloco] == self.dados[linCache][posBloco]:
+                    cache3.tag[pos] = "invalid"
+            elif self.tag[linCache] == "exclusive":
+                self.tag[linCache] = "modify"
+        #Write Miss
+        else:  
+            self.dados[linCache][posBloco] = RAM.leituraRAM(pos)
             if cache2.dados[linCache][posBloco] == self.dados[linCache][posBloco]:
                 cache2.tag[pos] = "invalid"
             if cache3.dados[linCache][posBloco] == self.dados[linCache][posBloco]:
                 cache3.tag[pos] = "invalid"
-        elif self.tag[linCache] == "exclusive":
-            self.tag[linCache] = "modify"
-        #Write Miss
 
-
-
-            
         
-    def fifo(self):
+    def fifo(self,RAM,cache2,cache3,acess,i):
+        if acess[i][0] == 0:  # se o processador do acesso for o segundo
 
-        for i in range(self.linhaCache):
-            if self.ocupado[i] == 1:
-                self.armzIndice.append(i)
-                
-        if self.armzIndice[31] == 32:
-            armz = self.armzIndice.pop(0)
-            return armz 
+            if acess[i][1] == 0:
+                self.read(acess[i][2],RAM,cache2,cache3)
+            elif acess[i][1] == 1:
+                for j in range(self.linhaCache):
+                    if self.ocupado[j] == 1:
+                        self.armzIndice.append(j)
+
+                if len(self.armzIndice) == 32:
+                    armz = self.armzIndice.pop(0)
+                    self.writeBack(RAM,0)
+                    return armz 
+                print("i: ",i,"tamanho do vetor: ",len(acess))                    
+                self.write(acess[i][2],RAM,cache2,cache3)
+        
+        elif acess[i][0] == 1: # se o processador do acesso for o segundo
             
-        # testando operações, arrumar o fifo dps    
-        if self.read() == -1:
-            print("HEY VINI VAI TOMA NO CU")
-        #testando operações de escrita da cache
-                                                                                                              
+
+            if acess[i][1] == 0: #escrita
+                cache2.read(acess[i][2],RAM,self,cache3)
+            elif acess[i][1] == 1: #leitura
+                for j in range(cache2.linhaCache):
+                    if cache2.ocupado[j] == 1:
+                        cache2.armzIndice.append(j)
+                        
+                if len(cache2.armzIndice) == 32:
+                    armz = cache2.armzIndice.pop(0)
+                    cache2.writeBack(RAM,0)
+                    return armz                
+                cache2.write(acess[i][2],RAM,self,cache3) 
+                 
+
+        elif acess[i][0] == 2: # se o processador do acesso for o terceiro
+
+            if acess[i][1] == 0:
+                cache3.read(acess[i][2], RAM, self, cache2)
+
+            elif acess[i][1] == 1:
+
+                for j in range(cache2.linhaCache):
+                    if cache3.ocupado[j] == 1:
+                        cache3.armzIndice.append(j)
+                        
+                if len(cache3.armzIndice) == 32:
+                    armz = cache3.armzIndice.pop(0)
+                    cache3.writeBack(RAM,0)
+                    return armz                
+                cache3.write(acess[i][2],RAM,self,cache2)      
+
+             
+                                                                        
         
