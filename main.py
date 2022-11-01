@@ -1,20 +1,16 @@
 from cache import cache
+from random import randint
 from ram import ram
 
-def funHash(num): #função que preenche os valores da lista dos dados da cache
-    num = num + 53352
-    return num
-
-dados = {}
+dados = [[0] for _ in range(1024)]
 
 for i in range (1024):
-    dados[i] = funHash(i)
+    dados[i] = randint(0,1000) 
 # hash em ação
 
-memRam = ram()
-memRam.dado = dados
+memRam = ram(dados)
+print(memRam.dado)
 cacheProcess1 = cache()
-print(cacheProcess1.dados)
 cacheProcess2 = cache() 
 cacheProcess3 = cache() 
 
@@ -22,26 +18,23 @@ cacheProcess3 = cache()
 resposta = 0
 print(cacheProcess1.tag[0])
 
-resposta = int(input("Escolha qual processador será usado: "))
-operacao = input("Escolha qual operação deseja realizar: ")
-posicao = int(input("Digite a posição: "))
-#print(resposta)
-if resposta == 1:
-    if operacao == "read":
-        cacheProcess1.read(posicao,memRam,cacheProcess2,cacheProcess3)
-    elif operacao == "write":
-        cacheProcess1.write(posicao,memRam,cacheProcess2,cacheProcess3)
-elif resposta == 2:
-    if operacao == "read":
-        cacheProcess2.read(posicao,memRam,cacheProcess1,cacheProcess3)
-    elif operacao == "write":
-        cacheProcess2.write(posicao,memRam, cacheProcess1,cacheProcess3)
-elif resposta == 3:
-    if operacao == "read":
-        cacheProcess3.read(posicao,memRam, cacheProcess1,cacheProcess2)           
-    elif operacao == "write":
-        cacheProcess3.write(posicao,memRam, cacheProcess1,cacheProcess2)
 
+# matriz para 
+acesso = [[0,0,0] for _ in range(10)]
+# acesso[0][0] = 1 numero da cache
+# acesso[0][1] = 1 operção
+# acesso[0][2] = 1 pos da ram
 
+for i in range(10):
+    acesso[i][0] = randint(0,2)
+    acesso[i][1] = randint(0,1)
+    acesso[i][2] = randint(0,50)
+for i in range(0,10):
+    cacheProcess1.fifo(memRam,cacheProcess2,cacheProcess3,acesso,i)
 
-#print(memRam.dado)
+print("CACHE 1")
+cacheProcess1.mostrarCache()
+print("CACHE 2")
+cacheProcess2.mostrarCache()
+print("CACHE 3")
+cacheProcess3.mostrarCache()
