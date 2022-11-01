@@ -1,7 +1,7 @@
 class ram:
-    def __init__(self):
+    def __init__(self,dado):
         self.tamRam = 1024
-        self.dado = [0]*1024
+        self.dado = dado
 
     def mostrarRam(self): #imprime a ram 
         for i in range (self.tamRam):
